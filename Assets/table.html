@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Tables</title>
+    <link rel="stylesheet" href="/Assets/table.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li><a href="index.html" id="dashboard-btn">Dashboard</a></li>
+                <li><a href="/Assets/table.html" id="tables-btn">Tables</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        <!-- Tables Section -->
+        <div class="tables-section" style="display: block;">
+            <div class="table-widget">
+                <h3>5-Day Weather Forecast</h3>
+                <div class="search-bar">
+                    <input type="text" id="city-input" placeholder="Enter City Name">
+                    <button id="search-btn">Search</button>
+                </div>
+
+                <!-- Table for weather forecast -->
+                <table id="weather-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Temperature (°C)</th>
+                            <th>Humidity (%)</th>
+                            <th>Wind Speed (m/s)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+               
+                <!-- Sorting and Filtering Controls -->
+                <div class="controls">
+                    <button id="sort-asc">Sort by Temperature (Ascending)</button>
+                    <button id="sort-desc">Sort by Temperature (Descending)</button>
+                    <button id="filter-rain">Show Only Rainy Days</button>
+                    <button id="highest-temp">Show Day with Highest Temperature</button>
+                </div>
+                 <!-- Pagination Controls -->
+                 <div id="pagination-controls">
+                    <button id="prev-page">Previous</button>
+                    <span id="page-info">Page 1</span>
+                    <button id="next-page">Next</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript files -->
+    <script src="/JS/table.js"></script> <!-- Link to the JavaScript file -->
+</body>
+</html>

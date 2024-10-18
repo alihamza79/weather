@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Load Chart.js -->
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li><a href="#" id="dashboard-btn">Dashboard</a></li>
+                <li><a href="/Assets/table.html" id="tables-btn">Tables</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header>
+            <h1>Weather App</h1>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="city-input" placeholder="Enter City Name">
+            <button id="search-btn">Search</button>
+        </div>
+
+        <!-- Weather Data Section -->
+        <section class="weather-data">
+            <div class="weather-icon">
+                <img id="weather-icon" src="./weather.png" alt="Weather Icon">
+            </div>
+            <h2>Weather Data for <span id="city-name">[City]</span></h2>
+            <p id="weather-description">[Weather description]</p>
+            <div class="weather-details">
+                <p>Temperature: <span id="temperature">[Temp]</span> °C</p>
+                <p>Humidity: <span id="humidity">[Humidity]</span> %</p>
+                <p>Wind Speed: <span id="wind-speed">[Wind Speed]</span> m/s</p>
+            </div>
+        </section>
+        
+
+       
+        <!-- Charts Section -->
+        <section class="charts">
+            <div class="chart" id="bar-chart-container">
+                <h3>Vertical Bar Chart</h3>
+                <canvas id="barChart"></canvas>
+            </div>
+            <div class="chart" id="doughnut-chart-container">
+                <h3>Doughnut Chart</h3>
+                <canvas id="doughnutChart"></canvas>
+            </div>
+            <div class="chart" id="line-chart-container">
+                <h3>Line Chart</h3>
+                <canvas id="lineChart"></canvas>
+            </div>
+        </section>
+
+        <!-- AI Chatbot Section -->
+        <section class="chatbot-section">
+            <h2>Gemini AI Assistant</h2>
+            <p>Need help or have questions? Ask Gemini, our intelligent chatbot!</p>
+
+            <div class="chat-container">
+                <div class="chat-window" id="chatWindow"></div>
+
+                <div class="input-container">
+                    <input type="text" id="userInput" placeholder="Ask something..." autocomplete="off">
+                    <button id="sendButton">Send</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Load JavaScript files -->
+    <script src="/JS/main.js"></script>
+    <script src="/JS/chart.js"></script>
+    <script src="/JS/chatbot.js"></script>
+</body>
+</html>

@@ -10,14 +10,32 @@ let originalForecastData = [];
 let currentPage = 1;
 const itemsPerPage = 5;
 
+// Loader element
+const loader = document.getElementById('loader');
+
+// Show loader function
+function showLoader() {
+    loader.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when loader is visible
+}
+
+// Hide loader function
+function hideLoader() {
+    loader.style.display = 'none';
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
 // Check if forecast data exists in localStorage on page load
-window.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+    showLoader();
     const savedForecastData = localStorage.getItem('forecastData');
 
     if (savedForecastData) {
-        forecastData = JSON.parse(savedForecastData).list; // Get list from forecast data
-        originalForecastData = [...forecastData]; // Make a copy of the original data
+        forecastData = JSON.parse(savedForecastData).list;
+        originalForecastData = [...forecastData];
         updateTable();
+    } else {
+        hideLoader();
     }
 });
 
@@ -25,6 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
 searchBtn.addEventListener('click', () => {
     const cityName = cityInput.value.trim();
     if (cityName) {
+        showLoader();
         getWeatherData(cityName);
     }
 });
@@ -32,16 +51,13 @@ searchBtn.addEventListener('click', () => {
 // Function to fetch weather data
 async function getWeatherData(city) {
     try {
-        // Fetch 5-day weather forecast
         const forecastResponse = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}`);
         const data = await forecastResponse.json();
 
         if (forecastResponse.ok) {
-            forecastData = data.list; // Store the forecast data
-            originalForecastData = [...forecastData]; // Make a copy of the original data
+            forecastData = data.list;
+            originalForecastData = [...forecastData];
             updateTable();
-
-            // Store forecast data in localStorage
             localStorage.setItem('forecastData', JSON.stringify(data));
         } else {
             alert('City not found. Please try again.');
@@ -49,18 +65,20 @@ async function getWeatherData(city) {
     } catch (error) {
         console.error('Error fetching weather data:', error);
         alert('Error fetching data. Please try again later.');
+    } finally {
+        hideLoader();
     }
 }
 
 // Function to update the table with forecast data
 function updateTable() {
-    weatherTableBody.innerHTML = ''; // Clear existing data
+    showLoader();
+    weatherTableBody.innerHTML = '';
 
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     const pageData = forecastData.slice(start, end);
 
-    // Populate the table with the data
     pageData.forEach(entry => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -73,11 +91,13 @@ function updateTable() {
     });
 
     document.getElementById('page-info').textContent = `Page ${currentPage}`;
+    hideLoader();
 }
 
 // Pagination controls
 document.getElementById('prev-page').addEventListener('click', () => {
     if (currentPage > 1) {
+        showLoader();
         currentPage--;
         updateTable();
     }
@@ -85,6 +105,7 @@ document.getElementById('prev-page').addEventListener('click', () => {
 
 document.getElementById('next-page').addEventListener('click', () => {
     if (currentPage < Math.ceil(forecastData.length / itemsPerPage)) {
+        showLoader();
         currentPage++;
         updateTable();
     }
@@ -98,6 +119,7 @@ function resetForecastData() {
 
 // Sort ascending
 document.getElementById('sort-asc').addEventListener('click', () => {
+    showLoader();
     resetForecastData();
     forecastData.sort((a, b) => a.main.temp - b.main.temp);
     updateTable();
@@ -105,6 +127,7 @@ document.getElementById('sort-asc').addEventListener('click', () => {
 
 // Sort descending
 document.getElementById('sort-desc').addEventListener('click', () => {
+    showLoader();
     resetForecastData();
     forecastData.sort((a, b) => b.main.temp - a.main.temp);
     updateTable();
@@ -112,6 +135,7 @@ document.getElementById('sort-desc').addEventListener('click', () => {
 
 // Filter rainy days
 document.getElementById('filter-rain').addEventListener('click', () => {
+    showLoader();
     resetForecastData();
     forecastData = forecastData.filter(entry => entry.weather[0].main.toLowerCase().includes('rain'));
     updateTable();
@@ -119,10 +143,11 @@ document.getElementById('filter-rain').addEventListener('click', () => {
 
 // Show highest temperature day
 document.getElementById('highest-temp').addEventListener('click', () => {
+    showLoader();
     resetForecastData();
     const highestTempDay = forecastData.reduce((highest, entry) => (entry.main.temp > highest.main.temp ? entry : highest), forecastData[0]);
 
-    weatherTableBody.innerHTML = ''; // Clear existing data
+    weatherTableBody.innerHTML = '';
     const row = document.createElement('tr');
     row.innerHTML = `
         <td>${new Date(highestTempDay.dt * 1000).toLocaleString()}</td>
@@ -133,4 +158,5 @@ document.getElementById('highest-temp').addEventListener('click', () => {
     weatherTableBody.appendChild(row);
 
     document.getElementById('page-info').textContent = 'Day with Highest Temperature';
+    hideLoader();
 });

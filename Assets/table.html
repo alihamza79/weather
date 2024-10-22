@@ -4,151 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Forecast Table</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="importmap">
-      {
-        "imports": {
-          "@google/generative-ai": "https://esm.run/@google/generative-ai"
-        }
-      }
-    </script>
-    <script type="module">
-        import { GoogleGenerativeAI } from "@google/generative-ai";
-
-        const API_KEY = 'AIzaSyAwbLzpfIiEbI4tuMjmCA8Qsr4cJs7h-pU';
-        const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        window.handleChat = async function() {
-            const userPrompt = document.getElementById("userPrompt").value;
-            if (userPrompt) {
-                if (userPrompt.toLowerCase().includes('weather')) {
-                    openCityModal();
-                } else {
-                    const result = await model.generateContent(userPrompt);
-                    document.getElementById("chatResponse").innerText = result.response.text();
-                }
-            }
-        };
-
-        window.openCityModal = function() {
-            document.getElementById("cityModal").classList.remove("hidden");
-        };
-
-        window.closeCityModal = function() {
-            document.getElementById("cityModal").classList.add("hidden");
-        };
-
-        window.fetchCityWeather = async function() {
-            const city = document.getElementById("cityInput").value;
-            await fetchWeatherForecast(city);
-            closeCityModal();
-            closeChatModal();
-        };
-
-        window.openChatModal = function() {
-            document.getElementById("chatModal").classList.remove("hidden");
-        };
-
-        window.closeChatModal = function() {
-            document.getElementById("chatModal").classList.add("hidden");
-        };
-    </script>
     <style>
-        .gradient-bg {
-            background: linear-gradient(90deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
+        .table-container {
+            background-color: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
-
-        .loader {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
+        table {
             width: 100%;
-            height: 100%;
-            z-index: 9999;
-            background: rgba(255, 255, 255, 0.8);
+            border-collapse: collapse;
+            color: #e0e0e0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #0f3460;
+        }
+        th {
+            background-color: #0f3460;
+            color: #4ecca3;
+            font-weight: bold;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .controls button {
+            background-color: #4ecca3;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .controls button:hover {
+            background-color: #45b393;
+        }
+        #pagination-controls {
+            display: flex;
             justify-content: center;
             align-items: center;
+            margin-top: 20px;
         }
-
-        .loader div {
-            border: 16px solid #f3f3f3;
-            border-top: 16px solid #3498db;
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
+        #pagination-controls button {
+            background-color: #4ecca3;
+            color: #1a1a2e;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        #page-info {
+            margin: 0 10px;
+            color: #e0e0e0;
+        }
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(26, 26, 46, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: #4ecca3;
+            font-size: 24px;
         }
     </style>
 </head>
-<body class="bg-gray-100">
-    <div class="loader flex">
-        <div></div>
-    </div>
+<body>
+    <!-- Add this right after the opening <body> tag -->
+    <div id="loader" class="loader" style="display: none;">Loading...</div>
 
-    <div class="flex flex-col md:flex-row">
-        <!-- Side Menu -->
-        <nav class="bg-gray-800 w-full lg:w-64 h-[200px] md:min-h-screen p-4 lg:p-0">
-            <div class="text-white text-center p-4">
-                <h1 class="text-2xl font-bold">Weather App</h1>
-            </div>
-            <ul class="mt-10 flex flex-col gap-6 items-center text-[18px]">
-                <li><a href="./index.html" class="block py-2 text-[20px] px-4 text-white hover:bg-gray-600">Dashboard</a></li>
-                <li><a href="./Tables.html" class="block text-[20px] py-2 px-4 text-white hover:bg-gray-600">Tables</a></li>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li><a href="../index.html" id="dashboard-btn">Dashboard</a></li>
+                <li><a href="table.html" id="tables-btn">Tables</a></li>
             </ul>
         </nav>
-
-        <!-- Main Content -->
-        <main class="flex-1 p-6">
-            <section class="bg-white p-4 rounded-lg shadow-md">
-                <h2 class="text-2xl font-semibold mb-4 gradient-bg text-white text-center p-2 rounded">5-Day Weather Forecast for <span id="forecastCityName">Islamabad</span></h2>
-                <button id="chatbot-btn" class="mb-4 px-4 py-2 bg-blue-500 text-white rounded" onclick="openChatModal()">Chat with Bot</button>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full border border-gray-300">
-                        <thead class="bg-gray-200">
-                            <tr>
-                                <th class="border-b-2 p-2">Date</th>
-                                <th class="border-b-2 p-2">Temperature (°C)</th>
-                                <th class="border-b-2 p-2">Weather Condition</th>
-                            </tr>
-                        </thead>
-                        <tbody id="forecastTable">
-                            <!-- Weather data will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
     </div>
 
-    <!-- Chat Modal -->
-    <div id="chatModal" class="hidden fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4">
-        <div class="bg-white rounded-lg p-6 w-full max-w-lg">
-            <h2 class="text-xl font-semibold mb-4">Chat with the Bot</h2>
-            <textarea id="userPrompt" class="border p-2 w-full mb-4" placeholder="Type your message..."></textarea>
-            <button class="px-4 py-2 bg-blue-500 text-white rounded w-full" onclick="handleChat()">Send</button>
-            <button class="px-4 py-2 bg-gray-300 text-black rounded w-full mt-2" onclick="closeChatModal()">Close</button>
-            <div id="chatResponse" class="mt-4 text-gray-700"></div>
+    <!-- Main content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header>
+            <h1>Weather Forecast Table</h1>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="city-input" placeholder="Enter City Name">
+            <button id="search-btn">Search</button>
+        </div>
+
+        <!-- Table Widget -->
+        <div class="table-container">
+            <h2>5-Day Weather Forecast</h2>
+            <div class="controls">
+                <button id="sort-asc">Sort by Temperature (Ascending)</button>
+                <button id="sort-desc">Sort by Temperature (Descending)</button>
+                <button id="filter-rain">Show Only Rainy Days</button>
+                <button id="highest-temp">Show Day with Highest Temperature</button>
+            </div>
+            <table id="weather-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Temperature (°C)</th>
+                        <th>Humidity (%)</th>
+                        <th>Wind Speed (m/s)</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="pagination-controls">
+                <button id="prev-page">Previous</button>
+                <span id="page-info">Page 1</span>
+                <button id="next-page">Next</button>
+            </div>
         </div>
     </div>
 
-    <!-- City Input Modal -->
-    <div id="cityModal" class="hidden fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4">
-        <div class="bg-white rounded-lg p-6 w-full max-w-lg">
-            <h2 class="text-xl font-semibold mb-4">Enter City Name</h2>
-            <input type="text" id="cityInput" class="border p-2 w-full mb-4" placeholder="City name">
-            <button class="px-4 py-2 bg-blue-500 text-white rounded w-full" onclick="fetchCityWeather()">Get Weather</button>
-            <button class="px-4 py-2 bg-gray-300 text-black rounded w-full mt-2" onclick="closeCityModal()">Close</button>
-        </div>
-    </div>
-
-    <script src="tableforecast.js"></script>
-</body>  
+    <script src="../JS/table.js"></script>
+</body>
 </html>

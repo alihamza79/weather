@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Load Chart.js -->
     <title>Weather Dashboard</title>
     <link rel="stylesheet" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Sidebar -->
@@ -69,11 +70,18 @@
             <p>Need help or have questions? Ask Gemini, our intelligent chatbot!</p>
 
             <div class="chat-container">
+                <div class="chat-header">
+                    <div class="ai-avatar">AI</div>
+                    <span>Gemini AI</span>
+                </div>
                 <div class="chat-window" id="chatWindow"></div>
-
                 <div class="input-container">
-                    <input type="text" id="userInput" placeholder="Ask something..." autocomplete="off">
-                    <button id="sendButton">Send</button>
+                    <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off">
+                    <button id="sendButton">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </section>
